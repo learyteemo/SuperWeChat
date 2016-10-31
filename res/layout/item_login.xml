@@ -4,24 +4,25 @@
     android:layout_height="match_parent">
 <include layout="@layout/item_back"/>
     <EditText
+        android:layout_marginLeft="15dp"
         android:background="@color/white"
         android:layout_marginTop="5dp"
         android:hint="用户名"
         android:textSize="20dp"
-        android:id="@+id/edUserName"
+        android:id="@+id/login_edUserName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/commit_login_title" />
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/gray"
-      />
+        android:background="@color/gray"/>
     <EditText
+        android:layout_marginLeft="15dp"
         android:background="@color/white"
         android:layout_marginTop="5dp"
         android:id="@+id/edPassword"
-        android:layout_below="@+id/edUserName"
+        android:layout_below="@+id/login_edUserName"
         android:hint="密码"
         android:textSize="20dp"
         android:layout_width="match_parent"
@@ -33,15 +34,23 @@
         android:background="@color/gray"
         />
     <Button
-        android:id="@+id/btnLogin"
-        android:layout_marginTop="30dp"
+    android:id="@+id/login_btnLogin"
+    android:layout_marginTop="30dp"
+    android:layout_below="@+id/edPassword"
+    android:layout_width="350dp"
+    android:layout_gravity="center"
+    android:layout_height="wrap_content"
+    android:text="登录"
+    android:background="@color/green"
+    android:textSize="25sp"
+    android:textColor="#fff" />
+    <Button
+        android:id="@+id/login_btnRegister"
+        android:layout_marginTop="150dp"
         android:layout_below="@+id/edPassword"
-        android:layout_width="350dp"
+        android:layout_width="100dp"
         android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="登录"
-        android:background="@color/green"
-        android:textSize="25sp"
-        android:textColor="#fff"
-        />
+        android:text="注册"
+        android:textSize="25sp" />
 </LinearLayout>
