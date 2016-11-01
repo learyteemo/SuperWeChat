@@ -13,8 +13,8 @@ allprojects {
         jcenter()
     }
 }
-
 apply plugin: 'com.android.application'
+
 
 
 
@@ -27,6 +27,7 @@ android {
         minSdkVersion 11
         targetSdkVersion 22
         multiDexEnabled true
+
     }
 
     sourceSets {
@@ -53,7 +54,6 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -65,11 +65,17 @@ android {
 dependencies {
     compile project(':redpacketlibrary')
     compile project(':EaseUI')
-    compile fileTree(dir: 'libs', include: '*.jar', exclude: 'android-support-multidex.jar')
+    compile fileTree(include: '*.jar', exclude: 'android-support-multidex.jar', dir: 'libs')
     //考虑到在eclipse中,直接使用源码
-//    compile ('com.anthonycr.grant:permissions:1.0'){
-//        exclude module: 'support-v4'
-//    }
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    //    compile ('com.anthonycr.grant:permissions:1.0'){
+    //        exclude module: 'support-v4'
+    //    }
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okio:okio:1.11.0'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.4.1'
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.jakewharton:butterknife:7.0.1'
+
 }
