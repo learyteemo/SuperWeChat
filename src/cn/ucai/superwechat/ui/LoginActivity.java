@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 
 import butterknife.Bind;
@@ -40,12 +41,15 @@ import butterknife.OnClick;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.SuperWeChatHelper;
+import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.SuperWeChatDBManager;
+import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MD5;
 import cn.ucai.superwechat.utils.MFGT;
+import cn.ucai.superwechat.utils.ResultUtils;
 
 /**
  * Login screen
@@ -200,13 +204,25 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginAppServer() {
-
         NetDao.login(mContext, currentUsername, currentPassword, new OkHttpUtils.OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
                 L.e(TAG,"s="+s);
-
-                loginsuccess();
+                if (s != null && s != "") {
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
+                    if (result != null && result.isRetMsg()) {
+                        User user = (User) result.getRetData();
+                        if (user != null) {
+                            UserDao dao = new UserDao(mContext);
+                            dao.saveUser(user);
+                            SuperWeChatHelper.getInstance().setCurrentntUser(user);
+                            loginsuccess();
+                        }
+                    } else {
+                        pd.dismiss();
+                        L.e(TAG, "login fail" + result);
+                    }
+                }
             }
             @Override
             public void onError(String error) {
@@ -248,7 +264,6 @@ public class LoginActivity extends BaseActivity {
             return;
         }
     }
-
     @OnClick({R.id.ivBack, R.id.login_btnLogin, R.id.login_btnRegister})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -257,10 +272,14 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.login_btnLogin:
                 login();
-                break;
             case R.id.login_btnRegister:
                 MFGT.gotoRegister(this);
                 break;
         }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        pd.dismiss();
     }
 }
