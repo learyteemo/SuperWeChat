@@ -98,9 +98,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void initView() {
-        if (SuperWeChatHelper.getInstance().getCurrentUsernName() != null) {
-            mloginEdUserName.setText(SuperWeChatHelper.getInstance().getCurrentUsernName());
-        }
+
         mivBack.setVisibility(View.VISIBLE);
         mtxtTitle.setVisibility(View.VISIBLE);
         mtxtTitle.setText(R.string.login);
@@ -222,6 +220,8 @@ public class LoginActivity extends BaseActivity {
                         pd.dismiss();
                         L.e(TAG, "login fail" + result);
                     }
+                }else {
+                    pd.dismiss();
                 }
             }
             @Override
@@ -230,6 +230,7 @@ public class LoginActivity extends BaseActivity {
                 L.e(TAG,"s="+error);
             }
         });
+        loginsuccess();
     }
 
     private void loginsuccess() {
@@ -263,6 +264,10 @@ public class LoginActivity extends BaseActivity {
         if (autoLogin) {
             return;
         }
+        if (SuperWeChatHelper.getInstance().getCurrentUsernName() != null) {
+            mloginEdUserName.setText(SuperWeChatHelper.getInstance().getCurrentUsernName());
+        }
+
     }
     @OnClick({R.id.ivBack, R.id.login_btnLogin, R.id.login_btnRegister})
     public void onClick(View view) {
@@ -280,6 +285,9 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        pd.dismiss();
+        if (pd != null) {
+
+            pd.dismiss();
+        }
     }
 }
