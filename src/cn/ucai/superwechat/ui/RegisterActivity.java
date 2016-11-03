@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
- * <p/>
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,10 +53,6 @@ public class RegisterActivity extends BaseActivity {
     EditText mregisterEdNick;
     @Bind(R.id.register_edPassword)
     EditText mregisterEdPassword;
-    @Bind(R.id.txt_left)
-    TextView txtLeft;
-    @Bind(R.id.txt_right)
-    TextView txtRight;
     @Bind(R.id.btn_send)
     Button btnSend;
     @Bind(R.id.ed_confirmPassword)
@@ -70,6 +66,9 @@ public class RegisterActivity extends BaseActivity {
     String pwd;
     @Bind(R.id.ivBack)
     ImageView ivBack;
+    @Bind(R.id.txt_title)
+    TextView mtxtTitle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +81,9 @@ public class RegisterActivity extends BaseActivity {
 
     private void initView() {
         ivBack.setVisibility(View.VISIBLE);
-        txtLeft.setVisibility(View.VISIBLE);
-        txtLeft.setText(R.string.register);
+
+        mtxtTitle.setVisibility(View.VISIBLE);
+        mtxtTitle.setText(R.string.register);
     }
 
     public void register() {
