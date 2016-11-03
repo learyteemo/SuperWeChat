@@ -38,6 +38,7 @@ import cn.ucai.superwechat.ui.ChatActivity;
 import cn.ucai.superwechat.ui.MainActivity;
 import cn.ucai.superwechat.ui.VideoCallActivity;
 import cn.ucai.superwechat.ui.VoiceCallActivity;
+import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.PreferenceManager;
 import com.hyphenate.easeui.controller.EaseUI;
 import com.hyphenate.easeui.controller.EaseUI.EaseEmojiconInfoProvider;
@@ -46,6 +47,7 @@ import com.hyphenate.easeui.controller.EaseUI.EaseUserProfileProvider;
 import com.hyphenate.easeui.domain.EaseEmojicon;
 import com.hyphenate.easeui.domain.EaseEmojiconGroupEntity;
 import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.model.EaseAtMessageHelper;
 import com.hyphenate.easeui.model.EaseNotifier;
 import com.hyphenate.easeui.model.EaseNotifier.EaseNotificationInfoProvider;
@@ -91,8 +93,13 @@ public class SuperWeChatHelper {
 	private static SuperWeChatHelper instance = null;
 	
 	private SuperWeChatModel demoModel = null;
-	
-	/**
+
+    private User currentntUser;
+
+    private Map<String, User> appcontactList;
+
+
+    /**
      * sync groups status listener
      */
     private List<DataSyncListener> syncGroupsListeners;
@@ -213,6 +220,10 @@ public class SuperWeChatHelper {
             @Override
             public EaseUser getUser(String username) {
                 return getUserInfo(username);
+            }
+
+            public User getAppUser(String username) {
+                return getAppUserInfo(username);
             }
         });
 
@@ -352,6 +363,19 @@ public class SuperWeChatHelper {
                 return intent;
             }
         });
+    }
+
+    private User getAppUserInfo(String username){
+        // To get instance of EaseUser, here we get it from the user list in memory
+        // You'd better cache it if you get it from your server
+        User user = null;
+        user = getAppContactList().get(username);
+        // if user is not in your contacts, set inital letter for him/her
+        if(user == null){
+            user = new User(username);
+            EaseCommonUtils.setAppUserInitialLetter(user);
+        }
+        return user;
     }
 
     EMConnectionListener connectionListener;
@@ -1232,4 +1256,65 @@ public class SuperWeChatHelper {
         easeUI.popActivity(activity);
     }
 
+    public User getCurrentntUser() {
+        if (currentntUser == null) {
+            String username = EMClient.getInstance().getCurrentUser();
+            L.e(TAG,"getCurrentUserame="+username);
+            currentntUser=new User(username);
+        }
+        return currentntUser;
+    }
+
+    public void setCurrentntUser(User currentntUser) {
+        this.currentntUser = currentntUser;
+    }
+
+    public SuperWeChatHelper(User currentntUser) {
+        this.currentntUser = currentntUser;
+    }
+
+    public void setAppContactList(Map<String, User> aContactList) {
+        if(aContactList == null){
+            if (appcontactList != null) {
+                appcontactList.clear();
+            }
+            return;
+        }
+
+        appcontactList = aContactList;
+    }
+    /**
+     * save single contact
+     */
+    public void saveAppContact(User user){
+        appcontactList.put(user.getMUserName(), user);
+        demoModel.saveAppContact(user);
+    }
+
+    /**
+     * get contact list
+     *
+     * @return
+     */
+    public Map<String, User> getAppContactList() {
+        if (isLoggedIn() && (appcontactList == null||appcontactList.size()==0)) {
+            appcontactList = demoModel.getAppContactList();
+        }
+
+        // return a empty non-null object to avoid app crash
+        if(appcontactList == null){
+            return new Hashtable<String, User>();
+        }
+        L.e(TAG,"getAppContactList,appContactList="+appcontactList.size());
+        return appcontactList;
+    }
+
+    public void updateAppContactList(List<User> contactInfoList) {
+        for (User u : contactInfoList) {
+            appcontactList.put(u.getMUserName(), u);
+        }
+        ArrayList<User> mList = new ArrayList<User>();
+        mList.addAll(appcontactList.values());
+        demoModel.saveAppContactList(mList);
+    }
 }
