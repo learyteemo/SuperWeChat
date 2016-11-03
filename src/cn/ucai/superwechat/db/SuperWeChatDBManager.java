@@ -1,6 +1,7 @@
 package cn.ucai.superwechat.db;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
@@ -11,6 +12,7 @@ import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.InviteMessage.InviteMesageStatus;
 import cn.ucai.superwechat.domain.RobotUser;
 import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.domain.User;
 import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.util.HanziToPinyin;
 
@@ -373,4 +375,136 @@ public class SuperWeChatDBManager {
 		}
 		return users;
 	}
+
+        public synchronized boolean saveUser(User user){
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(UserDao.USER_COLUMN_NAME,user.getMUserName());
+            values.put(UserDao.USER_COLUMN_NICK,user.getMUserNick());
+            values.put(UserDao.USER_COLUMN_AVATAR_ID,user.getMAvatarId());
+            values.put(UserDao.USER_COLUMN_AVATAR_TYPE,user.getMAvatarType());
+            values.put(UserDao.USER_COLUMN_AVATAR_PATH,user.getMAvatarPath());
+            values.put(UserDao.USER_COLUMN_AVATAR_SUFFIX,user.getMAvatarSuffix());
+            values.put(UserDao.USER_COLUMN_AVATAR_LASTUPDATE_TIME,user.getMAvatarLastUpdateTime());
+            if (db.isOpen()){
+                return db.replace(UserDao.USER_TABLE_NAME,null,values)!=-1;
+            }
+            return false;
+        }
+
+        public synchronized User getUser (String username){
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String sql = "select * from " +UserDao.USER_TABLE_NAME +" where "
+                    +UserDao.USER_COLUMN_NAME +" =?";
+            User user = null;
+            Cursor cursor = db.rawQuery(sql,new String[]{username});
+            if (cursor.moveToNext()){
+                user = new User();
+                user.setMUserName(username);
+                user.setMUserNick(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NICK)));
+                user.setMAvatarId(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_ID)));
+                user.setMAvatarType(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_TYPE)));
+                user.setMAvatarPath(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_PATH)));
+                user.setMAvatarSuffix(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_SUFFIX)));
+                user.setMAvatarLastUpdateTime(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_LASTUPDATE_TIME)));
+                return user;
+            }
+            return user;
+        }
+        public synchronized boolean updateUser (User user){
+            int result = -1;
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String sql = UserDao.USER_COLUMN_NAME+"=?";
+            ContentValues values = new ContentValues();
+            values.put(UserDao.USER_COLUMN_NICK,user.getMUserNick());
+            if (db.isOpen()){
+                result = db.update(UserDao.USER_TABLE_NAME, values, sql, new String[]{user.getMUserName()});
+            }
+            return result>0;
+        }
+
+    /**
+     * save a contact
+     * @param user
+     */
+    synchronized public void saveAppContact(User user){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(UserDao.USER_COLUMN_NAME,user.getMUserName());
+        if(user.getMUserNick() != null)
+            values.put(UserDao.USER_COLUMN_NICK,user.getMUserNick());
+        if(user.getMAvatarId() != null)
+            values.put(UserDao.USER_COLUMN_AVATAR_ID,user.getMAvatarId());
+        if(user.getMAvatarType() != null)
+            values.put(UserDao.USER_COLUMN_AVATAR_TYPE,user.getMAvatarType());
+        if(user.getMAvatarPath() != null)
+            values.put(UserDao.USER_COLUMN_AVATAR_PATH,user.getMAvatarPath());
+        if(user.getMAvatarSuffix() != null)
+            values.put(UserDao.USER_COLUMN_AVATAR_SUFFIX,user.getMAvatarSuffix());
+        if(user.getMAvatarLastUpdateTime() != null)
+            values.put(UserDao.USER_COLUMN_AVATAR_LASTUPDATE_TIME,user.getMAvatarLastUpdateTime());
+        values.put(UserDao.COLUMN_NAME_ID, user.getMUserName());
+        if(db.isOpen()){
+            db.replace(UserDao.USER_TABLE_NAME, null, values);
+        }
+    }
+
+    /**
+     * get contact list
+     *
+     * @return
+     */
+    synchronized public Map<String, User> getAppContactList() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Map<String, User> users = new Hashtable<String, User>();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from " + UserDao.USER_TABLE_NAME /* + " desc" */, null);
+            while (cursor.moveToNext()) {
+                String username = cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NAME));
+                User user = new User(username);
+                user.setMUserNick(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_NICK)));
+                user.setMAvatarId(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_ID)));
+                user.setMAvatarType(cursor.getInt(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_TYPE)));
+                user.setMAvatarPath(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_PATH)));
+                user.setMAvatarSuffix(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_SUFFIX)));
+                user.setMAvatarLastUpdateTime(cursor.getString(cursor.getColumnIndex(UserDao.USER_COLUMN_AVATAR_LASTUPDATE_TIME)));
+
+                    EaseCommonUtils.setAppUserInitialLetter(user);
+                users.put(username, user);
+            }
+
+            cursor.close();
+        }
+        return users;
+    }
+
+
+    /**
+     * save contact list
+     *
+     * @param contactList
+     */
+    synchronized public void saveAppContactList(List<User> contactList) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        if (db.isOpen()) {
+            db.delete(UserDao.USER_TABLE_NAME, null, null);
+            for (User user : contactList) {
+                ContentValues values = new ContentValues();
+                values.put(UserDao.COLUMN_NAME_ID, user.getMUserName());
+                if(user.getMUserNick() != null)
+                    values.put(UserDao.USER_COLUMN_NICK,user.getMUserNick());
+                if(user.getMAvatarId() != null)
+                    values.put(UserDao.USER_COLUMN_AVATAR_ID,user.getMAvatarId());
+                if(user.getMAvatarType() != null)
+                    values.put(UserDao.USER_COLUMN_AVATAR_TYPE,user.getMAvatarType());
+                if(user.getMAvatarPath() != null)
+                    values.put(UserDao.USER_COLUMN_AVATAR_PATH,user.getMAvatarPath());
+                if(user.getMAvatarSuffix() != null)
+                    values.put(UserDao.USER_COLUMN_AVATAR_SUFFIX,user.getMAvatarSuffix());
+                if(user.getMAvatarLastUpdateTime() != null)
+                    values.put(UserDao.USER_COLUMN_AVATAR_LASTUPDATE_TIME,user.getMAvatarLastUpdateTime());
+                    db.replace(UserDao.USER_TABLE_NAME, null, values);
+            }
+        }
+    }
 }
