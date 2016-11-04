@@ -24,13 +24,20 @@ import com.bumptech.glide.Glide;
 import com.hyphenate.EMValueCallBack;
 import com.hyphenate.easeui.domain.EaseUser;
 import com.hyphenate.easeui.domain.User;
+import com.hyphenate.easeui.utils.EaseImageUtils;
 import com.hyphenate.easeui.utils.EaseUserUtils;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.bean.Result;
@@ -57,7 +64,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     TextView mtvProfileWeixinhao;
 
     private ProgressDialog dialog;
-    private RelativeLayout rlNickName;
+    private RelativeLayout mrlNickName;
 
     User user=null;
     @Override
@@ -217,7 +224,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 break;
             case REQUESTCODE_CUTTING:
                 if (data != null) {
-                    setPicToView(data);
+                    updateAppUserAvatar(data);
+                   // setPicToView(data);
                 }
                 break;
             default:
@@ -225,6 +233,41 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void updateAppUserAvatar(final Intent picData) {
+        dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
+        dialog.show();
+
+        File file=saveBitmapFile(picData);
+        NetDao.updateAvatar(this, user.getMUserName(),file, new OkHttpUtils.OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                if (s != null) {
+                    Result result = ResultUtils.getResultFromJson(s, User.class);
+                    if (result != null && result.isRetMsg()) {
+                        setPicToView(picData);
+                    } else {
+                        dialog.dismiss();
+                        CommonUtils.showMsgShortToast(R.string.toast_updatephoto_fail);
+
+                    }
+                } else {
+                    dialog.dismiss();
+                    CommonUtils.showMsgShortToast(R.string.toast_updatephoto_fail);
+
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                L.e(TAG,"error"+error);
+                dialog.dismiss();
+                CommonUtils.showMsgShortToast(R.string.toast_updatephoto_fail);
+            }
+        });
+
+    }
+
     public void startPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -254,7 +297,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     }
 
     private void uploadUserAvatar(final byte[] data) {
-        dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
         new Thread(new Runnable() {
 
             @Override
@@ -278,7 +320,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             }
         }).start();
 
-        dialog.show();
     }
 
     public byte[] Bitmap2Bytes(Bitmap bm) {
@@ -294,6 +335,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 MFGT.finish(this);
                 break;
             case R.id.layout_title:
+             /*   L.e(TAG,"user.getAvatar()="+user.getAvatar());
+                String imagePath = EaseImageUtils.getImagePath(user.getMUserName());
+                L.e(TAG,"imagePath = "+imagePath);*/
                 uploadHeadPhoto();
                 break;
             case R.id.layout_profile_nick:
@@ -321,5 +365,22 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
                 CommonUtils.showMsgShortToast(R.string.username_cannot_bu_modify);
                 break;
         }
+    }
+    public File saveBitmapFile(Intent picdata) {
+        Bundle extras = picdata.getExtras();
+        if (extras != null) {
+            String imagePath = EaseImageUtils.getImagePath(user.getMUserName()+ I.AVATAR_SUFFIX_JPG);
+            File file = new File(imagePath);
+            L.e("file path = " + file.getAbsolutePath());
+            try {
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                bos.flush();
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file;
+        }
+        return null;
     }
 }
