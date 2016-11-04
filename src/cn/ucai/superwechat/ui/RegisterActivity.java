@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,6 +68,8 @@ public class RegisterActivity extends BaseActivity {
     ImageView ivBack;
     @Bind(R.id.txt_title)
     TextView mtxtTitle;
+    @Bind(R.id.img_right)
+    ImageView imgRight;
 
 
     @Override

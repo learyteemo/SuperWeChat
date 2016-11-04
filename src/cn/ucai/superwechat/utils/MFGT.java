@@ -10,6 +10,8 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.ui.LoginActivity;
 import cn.ucai.superwechat.ui.MainActivity;
 import cn.ucai.superwechat.ui.RegisterActivity;
+import cn.ucai.superwechat.ui.SettingsActivity;
+import cn.ucai.superwechat.ui.UserProfileActivity;
 
 
 public class MFGT {
@@ -36,5 +38,11 @@ public class MFGT {
     }
     public static void gotoRegister(Activity context){
         startActivity(context, RegisterActivity.class);
+    }
+    public static void gotoSettingActivity(Activity context){
+        startActivity(context, SettingsActivity.class);
+    }
+    public static void gotoUserProfileActivity(Activity context){
+        startActivity(context, UserProfileActivity.class);
     }
 }

@@ -31,6 +31,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +67,7 @@ import cn.ucai.superwechat.widget.MFViewPager;
 
 @SuppressLint("NewApi")
 public class MainActivity extends BaseActivity implements
-DMTabHost.OnCheckedChangeListener,ViewPager.OnPageChangeListener{
+        DMTabHost.OnCheckedChangeListener, ViewPager.OnPageChangeListener {
 
     protected static final String TAG = "MainActivity";
     /*// textview for unread message count
@@ -89,6 +90,8 @@ DMTabHost.OnCheckedChangeListener,ViewPager.OnPageChangeListener{
     MFViewPager mviewPager;
     @Bind(R.id.layout_tabhost)
     DMTabHost mlayoutTabhost;
+    @Bind(R.id.img_right)
+    ImageView mimgRight;
     // user account was removed
     private boolean isCurrentAccountRemoved = false;
     MainTabAdpter adapter;
@@ -210,15 +213,15 @@ DMTabHost.OnCheckedChangeListener,ViewPager.OnPageChangeListener{
 		// select first tab
 		mTabs[0].setSelected(true);*/
         mtxtTitle.setVisibility(View.VISIBLE);
-        mtxtAddFriend.setVisibility(View.VISIBLE);
+        mimgRight.setVisibility(View.VISIBLE);
         adapter = new MainTabAdpter(getSupportFragmentManager());
         mviewPager.setAdapter(adapter);
         mviewPager.setOffscreenPageLimit(4);
         adapter.clear();
-        adapter.addFragment(new ConversationListFragment(),getString(R.string.app_name));
-        adapter.addFragment(new ContactListFragment(),getString(R.string.contacts));
-        adapter.addFragment(new DiscoverFragment(),getString(R.string.discover));
-        adapter.addFragment(new SettingsFragment(),getString(R.string.me));
+        adapter.addFragment(new ConversationListFragment(), getString(R.string.app_name));
+        adapter.addFragment(new ContactListFragment(), getString(R.string.contacts));
+        adapter.addFragment(new DiscoverFragment(), getString(R.string.discover));
+        adapter.addFragment(new ProfileFragment(), getString(R.string.me));
         adapter.notifyDataSetChanged();
         mlayoutTabhost.setChecked(0);
         mlayoutTabhost.setOnCheckedChangeListener(this);
@@ -269,7 +272,7 @@ DMTabHost.OnCheckedChangeListener,ViewPager.OnPageChangeListener{
             public void run() {
                 // refresh unread count
                 updateUnreadLabel();
-	/*			if (currentTabIndex == 0) {
+    /*			if (currentTabIndex == 0) {
 					// refresh conversation list
 					if (conversationListFragment != null) {
 						conversationListFragment.refresh();
@@ -326,7 +329,7 @@ DMTabHost.OnCheckedChangeListener,ViewPager.OnPageChangeListener{
 
     @Override
     public void onCheckedChange(int checkedPosition, boolean byUser) {
-        mviewPager.setCurrentItem(checkedPosition,false);
+        mviewPager.setCurrentItem(checkedPosition, false);
        /* mlayoutTabhost.setChecked(checkedPosition);*/
     }
 

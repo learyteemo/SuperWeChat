@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2016 Hyphenate Inc. All rights reserved.
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -73,12 +73,15 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.login_btnRegister)
     Button mloginBtnRegister;
     LoginActivity mContext;
+    @Bind(R.id.img_right)
+    ImageView mimgRight;
 
     private boolean progressShow;
     private boolean autoLogin = false;
     String currentUsername;
     String currentPassword;
     ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,13 +173,13 @@ public class LoginActivity extends BaseActivity {
         final long start = System.currentTimeMillis();
         // call login method
         Log.d(TAG, "EMClient.getInstance().login");
-        EMClient.getInstance().login(currentUsername, MD5.getMessageDigest( currentPassword), new EMCallBack() {
+        EMClient.getInstance().login(currentUsername, MD5.getMessageDigest(currentPassword), new EMCallBack() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "login: onSuccess");
                 loginAppServer();
 
-                
+
             }
 
             @Override
@@ -205,7 +208,7 @@ public class LoginActivity extends BaseActivity {
         NetDao.login(mContext, currentUsername, currentPassword, new OkHttpUtils.OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
-                L.e(TAG,"s="+s);
+                L.e(TAG, "s=" + s);
                 if (s != null && s != "") {
                     Result result = ResultUtils.getResultFromJson(s, User.class);
                     if (result != null && result.isRetMsg()) {
@@ -220,14 +223,15 @@ public class LoginActivity extends BaseActivity {
                         pd.dismiss();
                         L.e(TAG, "login fail" + result);
                     }
-                }else {
+                } else {
                     pd.dismiss();
                 }
             }
+
             @Override
             public void onError(String error) {
                 pd.dismiss();
-                L.e(TAG,"s="+error);
+                L.e(TAG, "s=" + error);
             }
         });
         loginsuccess();
@@ -269,6 +273,7 @@ public class LoginActivity extends BaseActivity {
         }
 
     }
+
     @OnClick({R.id.ivBack, R.id.login_btnLogin, R.id.login_btnRegister})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -282,6 +287,7 @@ public class LoginActivity extends BaseActivity {
                 break;
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

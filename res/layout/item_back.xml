@@ -15,7 +15,17 @@
         android:visibility="gone"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
-
+    <ImageView
+        android:id="@+id/img_right"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:visibility="gone"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/icon_add"
+        />
     <TextView
    android:id="@+id/txt_add_friend"
     style="@style/txt_titleStyle1"
