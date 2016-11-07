@@ -1269,9 +1269,9 @@ public class SuperWeChatHelper {
         this.currentntUser = currentntUser;
     }
 
-    public SuperWeChatHelper(User currentntUser) {
+   /* public SuperWeChatHelper(User currentntUser) {
         this.currentntUser = currentntUser;
-    }
+    }*/
 
     public void setAppContactList(Map<String, User> aContactList) {
         if(aContactList == null){

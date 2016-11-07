@@ -234,7 +234,6 @@ public class LoginActivity extends BaseActivity {
                 L.e(TAG, "s=" + error);
             }
         });
-        loginsuccess();
     }
 
     private void loginsuccess() {
@@ -282,6 +281,7 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.login_btnLogin:
                 login();
+                break;
             case R.id.login_btnRegister:
                 MFGT.gotoRegister(this);
                 break;

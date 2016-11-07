@@ -443,7 +443,6 @@ public class SuperWeChatDBManager {
             values.put(UserDao.USER_COLUMN_AVATAR_SUFFIX,user.getMAvatarSuffix());
         if(user.getMAvatarLastUpdateTime() != null)
             values.put(UserDao.USER_COLUMN_AVATAR_LASTUPDATE_TIME,user.getMAvatarLastUpdateTime());
-        values.put(UserDao.COLUMN_NAME_ID, user.getMUserName());
         if(db.isOpen()){
             db.replace(UserDao.USER_TABLE_NAME, null, values);
         }
@@ -490,7 +489,7 @@ public class SuperWeChatDBManager {
             db.delete(UserDao.USER_TABLE_NAME, null, null);
             for (User user : contactList) {
                 ContentValues values = new ContentValues();
-                values.put(UserDao.COLUMN_NAME_ID, user.getMUserName());
+                values.put(UserDao.USER_TABLE_NAME, user.getMUserName());
                 if(user.getMUserNick() != null)
                     values.put(UserDao.USER_COLUMN_NICK,user.getMUserNick());
                 if(user.getMAvatarId() != null)

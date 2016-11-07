@@ -225,7 +225,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             case REQUESTCODE_CUTTING:
                 if (data != null) {
                     updateAppUserAvatar(data);
-                   // setPicToView(data);
+                   /* setPicToView(data);*/
                 }
                 break;
             default:
@@ -242,18 +242,20 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
         NetDao.updateAvatar(this, user.getMUserName(),file, new OkHttpUtils.OnCompleteListener<String>() {
             @Override
             public void onSuccess(String s) {
+                L.e(TAG, "s" + s);
                 if (s != null) {
                     Result result = ResultUtils.getResultFromJson(s, User.class);
                     if (result != null && result.isRetMsg()) {
+                        User u = (User) result.getRetData();
+                        SuperWeChatHelper.getInstance().saveAppContact(u);
                         setPicToView(picData);
                     } else {
                         dialog.dismiss();
-                        CommonUtils.showMsgShortToast(R.string.toast_updatephoto_fail);
-
+                        CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
                     }
                 } else {
                     dialog.dismiss();
-                    CommonUtils.showMsgShortToast(R.string.toast_updatephoto_fail);
+                    CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
 
                 }
             }
@@ -262,7 +264,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             public void onError(String error) {
                 L.e(TAG,"error"+error);
                 dialog.dismiss();
-                CommonUtils.showMsgShortToast(R.string.toast_updatephoto_fail);
+                CommonUtils.showShortToast(R.string.toast_updatephoto_fail);
             }
         });
 
@@ -291,7 +293,10 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             Bitmap photo = extras.getParcelable("data");
             Drawable drawable = new BitmapDrawable(getResources(), photo);
             mivProfileAvatar.setImageDrawable(drawable);
-            uploadUserAvatar(Bitmap2Bytes(photo));
+           // uploadUserAvatar(Bitmap2Bytes(photo));
+            dialog.dismiss();
+            Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_success),
+                    Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -369,11 +374,13 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
     public File saveBitmapFile(Intent picdata) {
         Bundle extras = picdata.getExtras();
         if (extras != null) {
+            Bitmap bitmap = extras.getParcelable("data");
             String imagePath = EaseImageUtils.getImagePath(user.getMUserName()+ I.AVATAR_SUFFIX_JPG);
             File file = new File(imagePath);
             L.e("file path = " + file.getAbsolutePath());
             try {
                 BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
                 bos.flush();
                 bos.close();
             } catch (IOException e) {
