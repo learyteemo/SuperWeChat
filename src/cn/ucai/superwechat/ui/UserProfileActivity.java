@@ -369,6 +369,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
             case R.id.layout_weixinhao:
                 CommonUtils.showMsgShortToast(R.string.username_cannot_bu_modify);
                 break;
+
         }
     }
     public File saveBitmapFile(Intent picdata) {
