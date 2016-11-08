@@ -5,39 +5,10 @@
     android:background="#f2f2f2"
     android:orientation="vertical" >
 
-
-    <RelativeLayout
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_top_bar"
-        android:background="@color/top_bar_normal_bg"
-        android:gravity="center_vertical">
-
-        <include layout="@layout/ease_commom_back_btn" />
-
-        <TextView
-            android:id="@+id/add_list_friends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textColor="#fff"
-            android:textSize="18sp" />
-        
-        <Button
-            android:id="@+id/search"
-            android:layout_width="54dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ease_common_tab_bg"
-            android:onClick="searchContact"
-            android:text="@string/button_search"
-            android:textColor="#fff"
-            android:textSize="16sp" />
-    </RelativeLayout>
+    <include layout="@layout/item_back"/>
 
     <EditText
-        android:id="@+id/edit_note"
+        android:id="@+id/edit_username"
         android:layout_width="match_parent"
         android:layout_height="39dp"
         android:layout_margin="10dp"
@@ -77,14 +48,13 @@
 
 
         <Button
-            android:id="@+id/indicator"
+            android:id="@+id/btn_addContact"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="11dp"
             android:background="@drawable/em_button_bg"
-            android:onClick="addContact"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:text="@string/button_add"
