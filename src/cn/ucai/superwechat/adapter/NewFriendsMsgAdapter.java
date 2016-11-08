@@ -25,6 +25,7 @@ import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.ResultUtils;
 
 import android.app.Activity;
@@ -106,7 +107,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 						Result result = ResultUtils.getResultFromJson(s, User.class);
 						if (result!=null&&result.isRetMsg()) {
 							User u = (User) result.getRetData();
-							EaseUserUtils.setAppUserAvatar(context,msg.getFrom(),holder.avator);
+							EaseUserUtils.setAppUserPathAvatar(context,u.getAvatar(),holder.avator);
 							EaseUserUtils.setAppUserNick(u.getMUserName(),holder.name);
 						}
 					}
@@ -226,8 +227,10 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 							buttonAgree.setText(str2);
 							buttonAgree.setBackgroundDrawable(null);
 							buttonAgree.setEnabled(false);
-							
+							buttonAgree.setVisibility(View.GONE);
+							buttonRefuse.setVisibility(View.VISIBLE);
 							buttonRefuse.setVisibility(View.INVISIBLE);
+							L.e("acceptInvitation");
 						}
 					});
 				} catch (final Exception e) {
