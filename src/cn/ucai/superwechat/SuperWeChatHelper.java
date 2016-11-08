@@ -626,6 +626,7 @@ public class SuperWeChatHelper {
 
         @Override
         public void onContactAdded(String username) {
+            L.e(TAG,"MayContactListener,onkContactAdded...");
             // save contact
             Map<String, EaseUser> localUsers = getContactList();
             Map<String, EaseUser> toAddUsers = new HashMap<String, EaseUser>();

@@ -1,5 +1,6 @@
 package cn.ucai.superwechat.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -82,6 +83,7 @@ public class FriendProfileActivity extends BaseActivity {
                 MFGT.finish(this);
                 break;
             case R.id.btn_send_msg:
+                MFGT.gotoChat(this,user.getMUserName());
                 break;
             case R.id.btn_send_video:
                 break;
