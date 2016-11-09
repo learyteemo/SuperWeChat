@@ -1348,6 +1348,7 @@ public class SuperWeChatHelper {
         // return a empty non-null object to avoid app crash
         if(appcontactList == null){
             return new Hashtable<String, User>();
+
         }
         L.e(TAG,"getAppContactList,appContactList="+appcontactList.size());
         return appcontactList;
