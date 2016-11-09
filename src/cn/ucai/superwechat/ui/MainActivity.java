@@ -57,6 +57,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.adapter.MainTabAdpter;
@@ -104,6 +105,15 @@ public class MainActivity extends BaseActivity implements
 
     TitlePopup mTitlePopup;
 
+    private AlertDialog.Builder conflictBuilder;
+    private AlertDialog.Builder accountRemovedBuilder;
+    private boolean isConflictDialogShow;
+    private boolean isAccountRemovedDialogShow;
+    private BroadcastReceiver internalDebugReceiver;
+    private ConversationListFragment conversationListFragment;
+    private BroadcastReceiver broadcastReceiver;
+    private LocalBroadcastManager broadcastManager;
+
     /**
      * check if current user account was remove
      */
@@ -123,6 +133,7 @@ public class MainActivity extends BaseActivity implements
         ButterKnife.bind(this);
         // runtime permission for android 6.0, just require all permissions here for simple
         requestPermissions();
+        conversationListFragment = new ConversationListFragment();
         contactListFragment = new ContactListFragment();
         initView();
         umeng();
@@ -131,7 +142,6 @@ public class MainActivity extends BaseActivity implements
         inviteMessgeDao = new InviteMessgeDao(this);
         UserDao userDao = new UserDao(this);
 //
-//        conversationListFragment = new ConversationListFragment();
 //		SettingsFragment settingFragment = new SettingsFragment();
 //		fragments = new Fragment[] { conversationListFragment, contactListFragment, settingFragment};
 //
@@ -229,12 +239,14 @@ public class MainActivity extends BaseActivity implements
         mviewPager.setAdapter(adapter);
         mviewPager.setOffscreenPageLimit(4);
         adapter.clear();
-        adapter.addFragment(new ConversationListFragment(), getString(R.string.app_name));
-//        adapter.addFragment(new ContactListFragment(), getString(R.string.contacts));
+//        adapter.addFragment(new ConversationListFragment(), getString(R.string.app_name));
+        adapter.addFragment(conversationListFragment, getString(R.string.app_name));
         adapter.addFragment(contactListFragment, getString(R.string.contacts));
+//        adapter.addFragment(new ContactListFragment(), getString(R.string.contacts));
         adapter.addFragment(new DiscoverFragment(), getString(R.string.discover));
         adapter.addFragment(new ProfileFragment(), getString(R.string.me));
         adapter.notifyDataSetChanged();
+        currentTabIndex = 0;
         mlayoutTabhost.setChecked(0);
         mlayoutTabhost.setOnCheckedChangeListener(this);
         mviewPager.setOnPageChangeListener(this);
@@ -312,12 +324,12 @@ public class MainActivity extends BaseActivity implements
             public void run() {
                 // refresh unread count
                 updateUnreadLabel();
-    			if (currentTabIndex == 0) {
+//    			if (currentTabIndex == 0) {
                     // refresh conversation list
 					if (conversationListFragment != null) {
 						conversationListFragment.refresh();
 					}
-				}
+//				}
             }
         });
     }
@@ -339,13 +351,12 @@ public class MainActivity extends BaseActivity implements
             public void onReceive(Context context, Intent intent) {
                 updateUnreadLabel();
                 updateUnreadAddressLable();
-         /*       if (currentTabIndex == 0) {
+                if (currentTabIndex == 0) {
                     // refresh conversation list
                     if (conversationListFragment != null) {
                         conversationListFragment.refresh();
-                    }*/
-               // } else
-                    if (currentTabIndex == 1) {
+                    }
+                } else if (currentTabIndex == 1) {
                     if(contactListFragment != null) {
                         contactListFragment.refresh();
                     }
@@ -455,6 +466,8 @@ public class MainActivity extends BaseActivity implements
      */
     public void updateUnreadLabel() {
         int count = getUnreadMsgCountTotal();
+        L.e(TAG,"updateUnread,count="+count);
+        mlayoutTabhost.setUnreadCount(0,count);
 	/*	if (count > 0) {
 			unreadLabel.setText(String.valueOf(count));
 			unreadLabel.setVisibility(View.VISIBLE);
@@ -552,14 +565,7 @@ public class MainActivity extends BaseActivity implements
         return super.onKeyDown(keyCode, event);
     }
 
-    private AlertDialog.Builder conflictBuilder;
-    private AlertDialog.Builder accountRemovedBuilder;
-    private boolean isConflictDialogShow;
-    private boolean isAccountRemovedDialogShow;
-    private BroadcastReceiver internalDebugReceiver;
-    private ConversationListFragment conversationListFragment;
-    private BroadcastReceiver broadcastReceiver;
-    private LocalBroadcastManager broadcastManager;
+
 
     /**
      * show the dialog when user logged into another device
@@ -640,6 +646,12 @@ public class MainActivity extends BaseActivity implements
             showConflictDialog();
         } else if (intent.getBooleanExtra(Constant.ACCOUNT_REMOVED, false) && !isAccountRemovedDialogShow) {
             showAccountRemovedDialog();
+        }
+
+        boolean isBack=intent.getBooleanExtra(I.ACTIVITY_BACK_CONVERSTION,false);
+        L.e(TAG,"extra="+isBack);
+        if (isBack) {
+            mlayoutTabhost.setChecked(0);
         }
     }
 
