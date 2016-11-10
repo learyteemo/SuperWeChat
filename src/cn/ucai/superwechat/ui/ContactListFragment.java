@@ -100,7 +100,8 @@ public class ContactListFragment extends EaseContactListFragment {
         }
     }
     
-    
+
+
     @SuppressWarnings("unchecked")
     @Override
     protected void setUpView() {
