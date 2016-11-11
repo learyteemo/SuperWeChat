@@ -21,6 +21,7 @@ import cn.ucai.superwechat.SuperWeChatHelper;
 import cn.ucai.superwechat.bean.Result;
 import cn.ucai.superwechat.data.NetDao;
 import cn.ucai.superwechat.data.OkHttpUtils;
+import cn.ucai.superwechat.utils.L;
 import cn.ucai.superwechat.utils.MFGT;
 import cn.ucai.superwechat.utils.ResultUtils;
 
@@ -67,12 +68,12 @@ public class FriendProfileActivity extends BaseActivity {
         isFriend(isFriend);
         synUserInfo();
     }
-
 private void syncFail(){
-    MFGT.finish(this);
-    return;
+    if (!isFriend) {
+        MFGT.finish(this);
+        return;
+    }
 }
-
     private void synUserInfo() {
         NetDao.syncUserInfo(this, username, new OkHttpUtils.OnCompleteListener<String>() {
             @Override
@@ -80,12 +81,15 @@ private void syncFail(){
                 if (s != null) {
                     Result result = ResultUtils.getResultFromJson(s, User.class);
                     if (result != null && result.isRetMsg()) {
-                        user = (User) result.getRetData();
-                        if (user != null) {
-                            setUserInfo();
+                      User  u = (User) result.getRetData();
+                        if (u != null) {
+                            L.e("u=", user.getAvatar());
+                            //setUserInfo();
                             if (isFriend) {
-                                SuperWeChatHelper.getInstance().saveAppContact(user);
+                                SuperWeChatHelper.getInstance().saveAppContact(u);
                             }
+                            user = u;
+                            setUserInfo();
                         } else {
                             syncFail();
                         }
@@ -96,14 +100,12 @@ private void syncFail(){
                     syncFail();
                 }
             }
-
             @Override
             public void onError(String error) {
                 syncFail();
             }
         });
     }
-
     private void initView() {
         mivBack.setVisibility(View.VISIBLE);
         mtxtTitle.setVisibility(View.VISIBLE);
@@ -111,7 +113,6 @@ private void syncFail(){
 
        // isFriend(true);
     }
-
     private void isFriend(boolean isFriend) {
         if (isFriend) {
             mbtnSendMsg.setVisibility(View.VISIBLE);
@@ -120,13 +121,11 @@ private void syncFail(){
             btnAddContact.setVisibility(View.VISIBLE);
         }
     }
-
     private void setUserInfo() {
         EaseUserUtils.setAppUserAvatar(this, user.getMUserName(), mivAvatar);
         EaseUserUtils.setAppUserNick(user.getMUserNick(), mtvUsername);
         EaseUserUtils.setAppUserNamewithno(user.getMUserName(), mtvWeixinhao);
     }
-
     @OnClick({R.id.ivBack, R.id.btn_send_msg, R.id.btn_send_video,R.id.btn_add_contact})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -149,13 +148,10 @@ private void syncFail(){
             case R.id.btn_add_contact:
                 MFGT.gotoAddFriendMsg(this, user.getMUserName());
                 break;
-
         }
     }
-
  /*   @OnClick(R.id.ivBack)
     public void onClick() {
         MFGT.finish(this);
     }*/
-
 }
