@@ -81,14 +81,14 @@ private void syncFail(){
                 if (s != null) {
                     Result result = ResultUtils.getResultFromJson(s, User.class);
                     if (result != null && result.isRetMsg()) {
-                      User  u = (User) result.getRetData();
-                        if (u != null) {
+                        user = (User) result.getRetData();
+                        if (user != null) {
                             L.e("u=", user.getAvatar());
                             //setUserInfo();
                             if (isFriend) {
-                                SuperWeChatHelper.getInstance().saveAppContact(u);
+                                SuperWeChatHelper.getInstance().saveAppContact(user);
                             }
-                            user = u;
+
                             setUserInfo();
                         } else {
                             syncFail();
