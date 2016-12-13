@@ -77,11 +77,11 @@ public class PublicChatRoomsActivity extends BaseActivity {
         setContentView(R.layout.activity_live);
         ButterKnife.bind(this);
 
-        etSearch = (EditText) findViewById(R.id.query);
-        ibClean = (ImageButton) findViewById(R.id.search_clear);
-        etSearch.setHint(R.string.search);
+      //  etSearch = (EditText) findViewById(R.id.query);
+       // ibClean = (ImageButton) findViewById(R.id.search_clear);
+       // etSearch.setHint(R.string.search);
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        pb = (ProgressBar) findViewById(R.id.progressBar);
+        //pb = (ProgressBar) findViewById(R.id.progressBar);
 
 
 //        GridLayoutManager glm = (GridLayoutManager) recyclerView.getLayoutManager();
@@ -90,8 +90,8 @@ public class PublicChatRoomsActivity extends BaseActivity {
 
         listView = (RecyclerView) findViewById(R.id.recycleview);
         listView.setHasFixedSize(true);
-        TextView title = (TextView) findViewById(R.id.tv_title);
-        title.setText(getResources().getString(R.string.chat_room));
+        //TextView title = (TextView) findViewById(R.id.tv_title);
+        //title.setText(getResources().getString(R.string.chat_room));
         txtTitle.setVisibility(View.VISIBLE);
         txtTitle.setText(R.string.chat_room);
         ivBack.setVisibility(View.VISIBLE);
