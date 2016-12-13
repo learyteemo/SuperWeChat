@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId "cn.ucai.superwechat"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 22
         multiDexEnabled true
 
@@ -65,6 +65,7 @@ android {
 dependencies {
     compile project(':redpacketlibrary')
     compile project(':EaseUI')
+    compile project(':ulive-android-sdk')
     compile fileTree(include: '*.jar', exclude: 'android-support-multidex.jar', dir: 'libs')
     //考虑到在eclipse中,直接使用源码
     //    compile ('com.anthonycr.grant:permissions:1.0'){
@@ -76,6 +77,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton:butterknife:8.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.github.florent37:viewanimator:1.0.4'
 }

@@ -5,7 +5,8 @@
     android:background="#f2f2f2"
     android:orientation="vertical" >
 
-<include layout="@layout/item_back"/>
+    <include layout="@layout/item_common_title"/>
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"

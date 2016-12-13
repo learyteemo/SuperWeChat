@@ -3,32 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/common_bg"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
-<include layout="@layout/item_back"/>
+    <include layout="@layout/item_common_title" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        
-         <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_height="match_parent">
+
+        <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_layout"
-            android:layout_height="match_parent" 
-            android:layout_width="match_parent">
-             
-		    <ListView
-		        android:id="@+id/list"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:background="@android:color/transparent"
-		        android:cacheColorHint="#00000000"
-		        android:descendantFocusability="afterDescendants"
-		        android:divider="#D4D4D4"
-		        android:dividerHeight="1px"
-		        android:fastScrollAlwaysVisible="false"
-		        android:fastScrollEnabled="false" />
-		 </android.support.v4.widget.SwipeRefreshLayout>
-		 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:cacheColorHint="#00000000"
+                android:descendantFocusability="afterDescendants"
+                android:divider="#D4D4D4"
+                android:dividerHeight="1px"
+                android:fastScrollAlwaysVisible="false"
+                android:fastScrollEnabled="false" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
     </FrameLayout>
 
 </LinearLayout>
